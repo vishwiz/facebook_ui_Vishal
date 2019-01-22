@@ -2,27 +2,10 @@
 
   border: 6px solid black;
   width: 50%;
+  
 }
-.like-section{
-  border-bottom: 1px solid grey;
-  width: 95%;
-
-}
-
-
-
-.like-section-button {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.like-section-button>button {
-  width: 16%;
-  margin-left: 3em;
-  height: 2em;
-  margin-top: 12px;
-  border-radius: 1em;
-  border-style: none;
-  outline: none;
-  margin-right: 1em;
+.main-section img{
+  width: 90%;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }

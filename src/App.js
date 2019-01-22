@@ -1,23 +1,26 @@
 import React, { Component } from 'react';
 import './App.css';
-import Like from "./like.js";
-// import Image from "./imagePost.js"
-import ImagePost from './imagePost.js';
-import Comment from "./comment.js";
+import image from './react.jpg';
+import PostData from "./postData.js";
+// import Comment from "./comment.js";
+// import LikeButton from "./likeButton.js"
+import SelectOption from "./selectOption.js"
 
 class App extends Component {
   constructor(props){
     super(props)
-    this.likesHandler= this.likesHandler.bind(this)
-    this.updateComment = this.updateComment.bind(this)
-    this.addComments = this.addComments.bind(this)
-    this.check = this.check.bind(this)
+    this.onLikeClick= this.onLikeClick.bind(this)
+    this.onAddComment = this.onAddComment.bind(this)
+    this.onSelect = this.onSelect.bind(this)
+
     this.state = {
       data: [
         {
+          'id':0,
         'item_description' : 'This is a text only item',
         'image' : '',
         'likes' : 10,
+        'isLiked':false,
         'comments' :
          [
            {
@@ -31,10 +34,12 @@ class App extends Component {
         ]
       }
       ,
-      {
+      {  
+        'id':1,
         'item_description' : 'This is an item with an image',
-        'image' : '/path/to/image.png',
+        'image' : image,
         'likes' : 20,
+        'isLiked':false,
         'comments' : [
           {
             'comment' : 'This is a comment',
@@ -45,76 +50,95 @@ class App extends Component {
             'created_at' : 'Fri May 10 2018 15:23:36 GMT+0530 (IST)'
           }
         ]
-      }
+      },
+      {
+        'id':2,
+      'item_description' : 'This is a text only item',
+      'image' : '',
+      'likes' : 10,
+      'isLiked':false,
+      'comments' :
+       [
+         {
+           'comment' : 'This is a comment',
+          'created_at' : 'Fri May 11 2018 19:17:43 GMT+0530 (IST)'
+        },
+        {
+          'comment' : 'This is another comment',
+          'created_at' : 'Fri May 10 2018 15:23:36 GMT+0530 (IST)'
+        }
+      ]
+    }
     ],
-    likes_check:false,
-    initial_comment:""
+    optionValue: "All",
     }
   }
-  likesHandler(){
-    let likes = this.state.data
-    let check = this.state.likes_check;
-    if(!check===true){
-      check = !check;
-      ++likes[0]['likes']
-    }else{
-      check = !check;
-      --likes[0]['likes']
-    }
-   this.setState({
-          data : likes,
-          likes_check:check
-   })
 
-  }
-  addComments(event){
-    event.preventDefault();
-     let dataComments = this.state.data
-     let inital_comment = this.state.initial_comment
-     dataComments[0]['comments'].push({comment:inital_comment})
-     console.log(dataComments)
-     this.setState({
-       data : dataComments,
-       initial_comment:""
-     })
-  }
-  updateComment(event){
+  onLikeClick(id){
     this.setState({
-      initial_comment:event.target.value
+      data:this.state.data.map(post=>{
+        if(post.id===id){
+          let newPost = {...post}
+        newPost.isLiked = !newPost.isLiked
+        newPost.likes = newPost.isLiked ? ++newPost.likes : --newPost.likes
+        return newPost;
+        }
+        return post
+      })
     })
   }
 
-  check(event){
-    if(event.target.value==="k"){
-      console.log('kels')
+  onAddComment(newComment,id){
+     this.setState({
+       data : this.state.data.map(post=>{
+           if(post.id===id){
+             let newPost = {...post}
+             newPost.comments.push({
+               comment:newComment,
+               created_at: Date()
+             })
+             return newPost;
+           }
+           return post
+       })
+     })
+  }
+   
+onSelect(e){
+   this.setState({ optionValue: e.target.value })
+}
+  render() {
+    let option = this.state.optionValue
+    let posts = [];
+    switch(option){
+     case "Image" :
+     posts = this.state.data.filter(post=> post['image'])
+     break;
+    
+     case "Text" :
+     posts = this.state.data.filter(post=> !post['image'])
+     console.log(posts)
+     break;
+
+     case "None" :
+     posts = []
+     break;
+
+     default:
+     posts =  this.state.data
+     break;
+     
     }
     
-  }
-  render() {
     return (
       <section>
-        <select refs="dataType">
-          <option value="k">None</option>
-          <option value="0">Text only</option>
-          <option value="1">Image Only</option>
-          <option value="0,1">All</option>
-        </select>
-        <button onClick={this.check}></button>
-          <center>
-          <div className="main-section">
-          <Like     
-    postDescription={this.state.data}
-    likeEventTrigger={this.likesHandler}
-/>
-      <Comment
-          postDescription={this.state.data}
-          initial_comment={this.state.initial_comment}
-          updateComment={this.updateComment}
-          addComments={this.addComments}
-       />
-     <ImagePost />
-    </div>
-          </center>
+            <SelectOption onSelect = {this.onSelect} />
+           <center>
+            <PostData 
+            posts={posts}
+            onLikeClick = {this.onLikeClick}
+            onAddComment = {this.onAddComment} />
+            </center>
         </section>
     );
   }

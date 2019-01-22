@@ -1,0 +1,23 @@
+.like-section{
+    border-bottom: 1px solid grey;
+    width: 95%;
+  
+  }
+  
+  
+  
+  .like-section-button {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .like-section-button>button {
+    width: 16%;
+    margin-left: 3em;
+    height: 2em;
+    margin-top: 12px;
+    border-radius: 1em;
+    border-style: none;
+    outline: none;
+    margin-right: 1em;
+  }
